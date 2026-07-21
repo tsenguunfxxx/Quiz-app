@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  articles     Article[]
+  quizAttempts QuizAttempt[]
+  userScores   UserScore[]
+}
+
+model Article {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  summary   String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizzes    Quiz[]
+  userScores UserScore[]
+
+  @@index([userId, createdAt])
+}
+
+model Quiz {
+  id        String   @id @default(cuid())
+  question  String
+  options   String[]
+  answer    String
+  articleId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  article      Article       @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  quizAttempts QuizAttempt[]
+
+  @@index([articleId])
+}
+
+model QuizAttempt {
+  id             String   @id @default(cuid())
+  userId         String
+  quizId         String
+  selectedAnswer String
+  isCorrect      Boolean
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@index([userId, quizId])
+}
+
+model UserScore {
+  id             String   @id @default(cuid())
+  userId         String
+  articleId      String
+  score          Int
+  totalQuestions Int
+  createdAt      DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
