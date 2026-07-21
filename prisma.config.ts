@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -7,6 +7,8 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: env("DATABASE_URL"),
+    // `prisma generate` нь холболт шаарддаггүй тул энд хоосон байхыг зөвшөөрнө.
+    // Холболт үнэхээр хэрэгтэй үед (migrate г.м.) Prisma өөрөө алдаа мэдэгдэнэ.
+    url: process.env.DATABASE_URL ?? "",
   },
 });
