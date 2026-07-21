@@ -40,5 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# prisma generated client
-/src/generated
+# Prisma-гийн үүсгэсэн client-ийг ЗОРИУДААР git-д оруулж байна.
+# pg driver adapter ашигладаг тул гаралт нь цэвэр TypeScript — binary агуулаагүй,
+# платформоос хамаарахгүй. Ингэснээр deploy хийхэд codegen ажиллах шаардлагагүй.
+# Схем өөрчлөгдөхөд postinstall / build script автоматаар шинэчилнэ.
